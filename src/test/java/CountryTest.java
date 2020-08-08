@@ -38,7 +38,6 @@ public class CountryTest {
     public void getBasePath() {
         given()
                 .when()
-
                 .then()
                 .statusCode(200)
         ;
@@ -60,18 +59,26 @@ public class CountryTest {
     @Test
     public void createCountry(){
         Country country = new Country();
-        country.setName("Daulet");
-        country.setCode("DK");
+        country.setName("Dauleting");
+        country.setCode("DKL");
 
-        given()
+        String countryId = given()
                 .cookies(cookies)
                 .body(country)
                 .contentType(ContentType.JSON)
-
                 .when()
                 .post("/school-service/api/countries")
                 .then()
                 .statusCode(201)
+        .extract().jsonPath().getString("id")
+        ;
+
+        given()
+                .cookies(cookies)
+                .when()
+                .delete("/school-service/api/countries/" + countryId)
+                .then()
+        .statusCode(200)
         ;
     }
 }
