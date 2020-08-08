@@ -1,16 +1,14 @@
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-
 import io.restassured.http.Cookies;
+import model.Country;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static io.restassured.RestAssured.*;
-import static org.hamcrest.Matchers.*;
+import static io.restassured.RestAssured.given;
 
 
 public class CountryTest {
@@ -19,13 +17,13 @@ public class CountryTest {
     private Cookies cookies;
 
     @BeforeClass
-    public void authenticate(){
-        RestAssured.baseURI="https://basqar.techno.study";
+    public void authenticate() {
+        RestAssured.baseURI = "https://basqar.techno.study";
         Map<String, String> credentials = new HashMap<>();
-        credentials.put("username","nigeria_tenant_admin");
-        credentials.put("password","TnvLOl54WxR75vylop2A");
+        credentials.put("username", "nigeria_tenant_admin");
+        credentials.put("password", "TnvLOl54WxR75vylop2A");
 
-         cookies = given()
+        cookies = given()
                 .body(credentials)
                 .contentType(ContentType.JSON)
                 .when()
@@ -37,26 +35,43 @@ public class CountryTest {
     }
 
     @Test
-    public void getBasePath(){
+    public void getBasePath() {
         given()
                 .when()
 
                 .then()
-        .statusCode(200)
+                .statusCode(200)
         ;
     }
 
 
+    @Test
+    public void getCountries() {
+        given()
+                .cookies(cookies)
+                .when()
+                .get("/school-service/api/countries")
+                .then()
+                .statusCode(200)
+        ;
+
+    }
 
     @Test
-    public void getCountries(){
-    given()
-            .cookies(cookies)
-            .when()
-            .get("/school-service/api/countries")
-            .then()
-    .statusCode(200)
-    ;
+    public void createCountry(){
+        Country country = new Country();
+        country.setName("Daulet");
+        country.setCode("DK");
 
-}
+        given()
+                .cookies(cookies)
+                .body(country)
+                .contentType(ContentType.JSON)
+
+                .when()
+                .post("/school-service/api/countries")
+                .then()
+                .statusCode(201)
+        ;
+    }
 }
