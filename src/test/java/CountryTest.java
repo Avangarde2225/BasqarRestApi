@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 
 
 public class CountryTest {
@@ -111,6 +113,7 @@ public class CountryTest {
                 .put("/school-service/api/countries")
                 .then()
                 .statusCode(200)
+                .body("name", equalTo(country.getName()))
         ;
 //deleting country
         given()
