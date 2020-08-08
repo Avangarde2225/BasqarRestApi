@@ -59,9 +59,9 @@ public class CountryTest {
     @Test
     public void createCountry(){
         Country country = new Country();
-        country.setName("Dauleting");
+        country.setName("Dauletingler");
         country.setCode("DKL");
-
+//create country
         String countryId = given()
                 .cookies(cookies)
                 .body(country)
@@ -72,7 +72,7 @@ public class CountryTest {
                 .statusCode(201)
         .extract().jsonPath().getString("id")
         ;
-
+//delete country
         given()
                 .cookies(cookies)
                 .when()
@@ -80,5 +80,46 @@ public class CountryTest {
                 .then()
         .statusCode(200)
         ;
+    }
+
+    @Test
+    public void editTest(){
+        Country country = new Country();
+        country.setName("Dauletingler");
+        country.setCode("DKL");
+
+        String countryId = given()
+                .cookies(cookies)
+                .body(country)
+                .contentType(ContentType.JSON)
+                .when()
+                .post("/school-service/api/countries")
+                .then()
+                .statusCode(201)
+                .extract().jsonPath().getString("id")
+                ;
+
+        //editing country
+        country.setId(countryId);
+        country.setName("Dauleting edited");
+
+        given()
+                .cookies(cookies)
+                .body(country)
+                .contentType(ContentType.JSON)
+                .when()
+                .put("/school-service/api/countries")
+                .then()
+                .statusCode(200)
+        ;
+//deleting country
+        given()
+                .cookies(cookies)
+                .when()
+                .delete("/school-service/api/countries/" + countryId)
+                .then()
+                .statusCode(200)
+        ;
+
     }
 }
