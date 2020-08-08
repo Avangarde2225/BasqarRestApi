@@ -1,6 +1,7 @@
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
+import io.restassured.http.Cookies;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -15,6 +16,7 @@ import static org.hamcrest.Matchers.*;
 public class CountryTest {
 
 
+    private Cookies cookies;
 
     @BeforeClass
     public void authenticate(){
@@ -23,14 +25,15 @@ public class CountryTest {
         credentials.put("username","nigeria_tenant_admin");
         credentials.put("password","TnvLOl54WxR75vylop2A");
 
-        given()
+         cookies = given()
                 .body(credentials)
                 .contentType(ContentType.JSON)
                 .when()
                 .post("/auth/login")
                 .then()
-        .statusCode(200)
-        ;
+                .statusCode(200)
+                .extract().response().getDetailedCookies();
+        System.out.println(cookies.asList());
     }
 
     @Test
@@ -48,6 +51,7 @@ public class CountryTest {
     @Test
     public void getCountries(){
     given()
+            .cookies(cookies)
             .when()
             .get("/school-service/api/countries")
             .then()
